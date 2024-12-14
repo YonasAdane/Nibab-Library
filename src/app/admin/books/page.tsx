@@ -47,43 +47,154 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { z } from "zod"
-import { createBookSchema } from "@/lib/types/validations"
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-]
-type BookType=z.infer<typeof createBookSchema>;
-const deta:BookType[]=[];
+type BookType={
+    title:string,
+    author:string,
+    genre:string,
+    description:string,
+    isbn:string,
+    publicationYear:number,
+    available:boolean
+};
+const booksData:BookType[] = [
+    {
+      title: "To Kill a Mockingbird",
+      author: "Harper Lee",
+      genre: "Fiction",
+      description: "A novel about racial injustice and moral growth in the American South.",
+      isbn: "9780061120084",
+      publicationYear: 1960,
+      available: true,
+    },
+    {
+      title: "1984",
+      author: "George Orwell",
+      genre: "Dystopian",
+      description: "A chilling prophecy about the future and a society under totalitarian rule.",
+      isbn: "9780451524935",
+      publicationYear: 1949,
+      available: true,
+    },
+    {
+      title: "Pride and Prejudice",
+      author: "Jane Austen",
+      genre: "Romance",
+      description: "A witty and romantic tale of love, family, and social class.",
+      isbn: "9780141040349",
+      publicationYear: 1813,
+      available: false,
+    },
+    {
+      title: "The Great Gatsby",
+      author: "F. Scott Fitzgerald",
+      genre: "Fiction",
+      description: "A story of the American Dream and the excesses of the Jazz Age.",
+      isbn: "9780743273565",
+      publicationYear: 1925,
+      available: true,
+    },
+    {
+      title: "Moby-Dick",
+      author: "Herman Melville",
+      genre: "Adventure",
+      description: "The quest for vengeance against the white whale, Moby Dick.",
+      isbn: "9780142437247",
+      publicationYear: 1851,
+      available: false,
+    },
+    {
+      title: "The Hobbit",
+      author: "J.R.R. Tolkien",
+      genre: "Fantasy",
+      description: "The epic journey of Bilbo Baggins to reclaim treasure guarded by a dragon.",
+      isbn: "9780345339683",
+      publicationYear: 1937,
+      available: true,
+    },
+    {
+      title: "Brave New World",
+      author: "Aldous Huxley",
+      genre: "Science Fiction",
+      description: "A dystopian world dominated by technology and social engineering.",
+      isbn: "9780060850524",
+      publicationYear: 1932,
+      available: true,
+    },
+    {
+      title: "Jane Eyre",
+      author: "Charlotte Brontë",
+      genre: "Gothic Romance",
+      description: "The tale of an orphaned governess and her complicated love life.",
+      isbn: "9780141441146",
+      publicationYear: 1847,
+      available: false,
+    },
+    {
+      title: "The Catcher in the Rye",
+      author: "J.D. Salinger",
+      genre: "Fiction",
+      description: "The experiences of a disillusioned teenager in 1950s New York.",
+      isbn: "9780316769488",
+      publicationYear: 1951,
+      available: true,
+    },
+    {
+      title: "The Alchemist",
+      author: "Paulo Coelho",
+      genre: "Philosophical Fiction",
+      description: "A journey of self-discovery and the pursuit of one's dreams.",
+      isbn: "9780061122415",
+      publicationYear: 1988,
+      available: true,
+    },
+    {
+      title: "War and Peace",
+      author: "Leo Tolstoy",
+      genre: "Historical Fiction",
+      description: "A sweeping tale of love, war, and society in Russia during the Napoleonic era.",
+      isbn: "9781400079988",
+      publicationYear: 1869,
+      available: false,
+    },
+    {
+      title: "The Road",
+      author: "Cormac McCarthy",
+      genre: "Post-apocalyptic Fiction",
+      description: "A harrowing journey of survival in a bleak, dystopian world.",
+      isbn: "9780307387899",
+      publicationYear: 2006,
+      available: true,
+    },
+    {
+      title: "The Picture of Dorian Gray",
+      author: "Oscar Wilde",
+      genre: "Philosophical Fiction",
+      description: "A young man's portrait ages instead of him, reflecting his moral decay.",
+      isbn: "9780141439570",
+      publicationYear: 1890,
+      available: true,
+    },
+    {
+      title: "Wutheribetter than words one directionng Heights",
+      author: "Emily Brontë",
+      genre: "Gothic Fiction",
+      description: "A dark tale of love, revenge, and passion on the Yorkshire moors.",
+      isbn: "9780141439556",
+      publicationYear: 1847,
+      available: false,
+    },
+    {
+      title: "Animal Farm",
+      author: "George Orwell",
+      genre: "Satire",
+      description: "An allegorical tale about the corruption of power and the Russian Revolution.",
+      isbn: "9780451526342",
+      publicationYear: 1945,
+      available: true,
+    },
+  ];
+  
 
 export type Payment = {
   id: string
@@ -92,7 +203,7 @@ export type Payment = {
   email: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<BookType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -116,41 +227,68 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "title",
+    header: "Title",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="capitalize">{row.getValue("title")}</div>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "author",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Author
           <ArrowUpDown />
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("author")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "genre",
+    header: () => <div className="text-right">Genre</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+        return <div className="text-right font-medium">{row.getValue("genre")}</div>
     },
+  },
+  {
+    accessorKey: "isbn",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          ISBN
+          <ArrowUpDown />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="lowercase">{row.getValue("isbn")}</div>,
+  },
+  {
+    accessorKey: "publicationYear",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Publication Year
+          <ArrowUpDown />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="lowercase text-right">{row.getValue("publicationYear")}</div>,
+  },
+  {
+    accessorKey: "available",
+    header: "Available",
+    cell: ({ row }) => <div className="lowercase">{row.getValue("available")?"true":"false"}</div>,
   },
   {
     id: "actions",
@@ -169,7 +307,7 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(payment.title)}
             >
               Copy payment ID
             </DropdownMenuItem>
@@ -193,7 +331,7 @@ export default function DataTableDemo() {
   const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
-    data,
+    data:booksData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -215,10 +353,10 @@ export default function DataTableDemo() {
     <div className="w-full p-4">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter Authors..."
+          value={(table.getColumn("author")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("author")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
