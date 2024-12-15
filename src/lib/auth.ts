@@ -3,55 +3,53 @@ import Credentials from "next-auth/providers/credentials";
 import * as argon2 from "argon2";
 import db from "./prisma-config"; // Ensure you have this configured correctly
 import { z } from "zod";
-
-const credentialsSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
-});
+import { createUserSchema } from "./types/validations";
+import { compare } from "bcrypt";
+import { PrismaAdapter } from "@auth/prisma-adapter"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
+  // adapter: PrismaAdapter(db),
+    providers: [
     Credentials({
       credentials: {
         email: { label: "Email", type: "text", placeholder: "Enter your email" },
         password: { label: "Password", type: "password", placeholder: "Enter your password" },
       },
-      // authorize: async (credentials) => {
-      //   try {
-      //     const validatedCredentials = credentialsSchema.parse(credentials);
+      authorize: async (credentials) => {
+        try {
+          const validatedCredentials = createUserSchema.safeParse(credentials);
         
-      //   if (!credentials?.email || !credentials?.password) {
-      //     throw new Error("Email and password are required.");
-      //   }
+        if (!validatedCredentials.success) {
+          throw new Error("Invalid Credentials.");
+        }
 
-      //   // Verify if the user exists in the database
-      //    const user = await db.user.findUnique({
-      //     where: { email: validatedCredentials.email as string},
-      //   });
+        // Verify if the user exists in the database
+         const user = await db.user.findUnique({
+          where: { email: validatedCredentials.data.email},
+        });
 
-      //   if (!user) {
-      //     throw new Error("No user found with this email.");
-      //   }
+        if (!user) {
+          throw new Error("No user found with this email.");
+        }
 
-      //   // Compare the provided password with the hashed password stored in the database
-      //   const isPasswordValid = await argon2.verify(user.password, validatedCredentials.password as string);
-      //   if (!isPasswordValid) {
-      //     throw new Error("Invalid credentials.");
-      //   }
-
-      //   // Return the user object without sensitive information like the hashed password
-      //   return {
-      //     id: user.id,
-      //     username: user.username,
-      //     email: user.email,
-      //   };
-      // } catch (error) {
-      //   console.error("Authorization error:", error);
-      //   throw new Error("Invalid credentials.");
-      // }
-      // },
+        // Compare the provided password with the hashed password stored in the database
+        const isPasswordValid = await compare( validatedCredentials.data.password,user.password);
+        if (!isPasswordValid) {
+          throw new Error("Invalid credentials.");
+        }
+        return {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        };
+      } catch (error) {
+        console.error("Authorization error:", error);
+        throw new Error("Invalid credentials.");
+      }
+      },
     }),
   ],
+  secret:process.env.AUTH_SECRET,
   pages: {
     signIn: "/login", // Customize your sign-in page
   },
@@ -68,16 +66,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token;
     },
-    // async session({ session, token }) {
+    async session({ session, token }) {
       // Attach user info to the session
-      // if (token) {
-      //   session.user = {
-      //     id: token.id,
-      //     email: token.email,
-      //     name: token.name,
-      //   };
-      // }
-      // return session;
-    // },
+      if (token) {
+        session.user = {
+          id: token.id+'' ,
+          email: token.email!,
+          name: token.name,
+          emailVerified:null
+        };
+      }
+      return session;
+    },
   },
 });

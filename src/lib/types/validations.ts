@@ -11,7 +11,7 @@ const createUserSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   email: z.string().email("Invalid email address"),
-  role: RoleEnum,
+  // role: RoleEnum,
   verified: z.boolean().optional(),
 });
 

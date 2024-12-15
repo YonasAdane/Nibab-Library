@@ -16,13 +16,13 @@ datasource db {
 
 // User model
 model User {
-  id         Int         @id @default(autoincrement())
+  id         String          @id @default(cuid())
   username   String      @unique
   password   String
   firstName  String?
   lastName   String?
   email      String      @unique
-  role       Role
+  role       Role         @default(MEMBER)
   verified   Boolean     @default(false)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
@@ -55,7 +55,7 @@ model Book {
 // Borrowing model
 model Borrowing {
   id         Int       @id @default(autoincrement())
-  userId     Int
+  userId     String
   bookId     Int
   borrowDate DateTime  @default(now())
   dueDate    DateTime
@@ -73,7 +73,7 @@ model Image {
   fileType  FileType
   user      User?    @relation(fields: [userId], references: [id])
   book      Book?    @relation(fields: [bookId], references: [id])
-  userId    Int?     @unique
+  userId    String?     @unique
   bookId    Int?     @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
