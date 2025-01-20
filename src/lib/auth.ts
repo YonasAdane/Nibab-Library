@@ -1,11 +1,8 @@
+import { compare } from "bcryptjs";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import * as argon2 from "argon2";
 import db from "./prisma-config"; // Ensure you have this configured correctly
-import { z } from "zod";
 import { createUserSchema } from "./types/validations";
-import { compare } from "bcrypt";
-import { PrismaAdapter } from "@auth/prisma-adapter"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // adapter: PrismaAdapter(db),

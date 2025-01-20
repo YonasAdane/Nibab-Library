@@ -1,6 +1,6 @@
 import db from "@/lib/prisma-config";
 import { createUserSchema } from "@/lib/types/validations";
-import { hash } from "bcrypt";
+import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req:NextRequest){
